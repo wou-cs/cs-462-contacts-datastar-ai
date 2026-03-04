@@ -1,0 +1,135 @@
+@{
+    ViewData["Title"] = "Contacts";
+}
+
+<h1>Contacts</h1>
+
+@*
+    data-signals declares reactive state that Datastar tracks.
+    Any element can read these with $signalName and Datastar
+    automatically updates the DOM when values change.
+    The server can also patch signal values via SSE.
+*@
+<div data-signals="{query: '', showForm: false}">
+
+    <!-- Search bar -->
+    <div class="row mb-3">
+        <div class="col-md-6">
+            @*
+                data-bind:query — two-way binds this input's value to the $query signal.
+                data-on:input__debounce.300ms — fires on the "input" event, but waits
+                    300ms after the user stops typing before executing the expression.
+                    The expression @@get('/Contact/Search') sends a GET request via SSE,
+                    automatically including all current signal values.
+                    (@@get is Razor syntax — the @@ escapes to a single @ in the HTML output,
+                    giving us Datastar's @get action.)
+            *@
+            <input class="form-control" placeholder="Search contacts..."
+                   data-bind:query
+                   data-on:input__debounce.300ms="@@get('/Contact/Search')" />
+        </div>
+        <div class="col-md-6 text-end">
+            @*
+                data-on:click — runs the expression on click. Here we toggle
+                the $showForm signal directly in the browser, no server call needed.
+            *@
+            <button class="btn btn-primary"
+                    data-on:click="$showForm = !$showForm">
+                Add New Contact
+            </button>
+        </div>
+    </div>
+
+    @* Inline create form — data-show hides/shows based on $showForm signal *@
+    <div data-show="$showForm">
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Add a New Contact</h5>
+                <div class="row">
+                    <div class="col-md-6">
+                        @*
+                            A nested data-signals block adds more signals scoped to the form.
+                            The *Error signals are empty strings initially; the server patches
+                            them with validation messages when the user types or submits.
+                        *@
+                        <div data-signals="{name: '', email: '', phone: '', category: '', notes: '', nameError: '', emailError: '', phoneError: '', categoryError: ''}">
+                            <div class="mb-3">
+                                <label class="form-label">Name</label>
+                                @*
+                                    data-bind:name — two-way bind to the $name signal.
+                                    data-on:keydown__debounce.500ms — on each keystroke (debounced),
+                                        POST all signals to /Contact/Validate. The server runs
+                                        model validation and patches error signals back via SSE.
+                                    data-class:is-invalid — adds the Bootstrap "is-invalid" CSS class
+                                        when the expression is true (i.e., when $nameError is non-empty).
+                                    data-text on the div below — sets its text content to $nameError,
+                                        displaying the server's validation message.
+                                *@
+                                <input class="form-control" data-bind:name
+                                       data-on:keydown__debounce.500ms="@@post('/Contact/Validate')"
+                                       data-class:is-invalid="$nameError !== ''" />
+                                <div class="text-danger small" data-text="$nameError"></div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Email</label>
+                                <input class="form-control" type="email" data-bind:email
+                                       data-on:keydown__debounce.500ms="@@post('/Contact/Validate')"
+                                       data-class:is-invalid="$emailError !== ''" />
+                                <div class="text-danger small" data-text="$emailError"></div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Phone</label>
+                                <input class="form-control" type="tel" data-bind:phone
+                                       data-on:keydown__debounce.500ms="@@post('/Contact/Validate')"
+                                       data-class:is-invalid="$phoneError !== ''" />
+                                <div class="text-danger small" data-text="$phoneError"></div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Category</label>
+                                @*
+                                    For the <select>, we use data-on:change instead of keydown
+                                    since dropdowns don't fire keydown in a useful way.
+                                    No debounce needed — change fires once per selection.
+                                *@
+                                <select class="form-control" data-bind:category
+                                        data-on:change="@@post('/Contact/Validate')"
+                                        data-class:is-invalid="$categoryError !== ''">
+                                    <option value="">-- Select a category --</option>
+                                    <option value="Friend">Friend</option>
+                                    <option value="Family">Family</option>
+                                    <option value="Work">Work</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                                <div class="text-danger small" data-text="$categoryError"></div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Notes</label>
+                                <textarea class="form-control" rows="3" data-bind:notes></textarea>
+                            </div>
+                            @*
+                                @@post('/Contact/Create') — sends all signals to the Create endpoint.
+                                If validation fails, the server patches error signals (same as Validate).
+                                If valid, the server adds the contact, patches the updated table HTML,
+                                and resets all form + error signals to empty strings.
+                            *@
+                            <button class="btn btn-primary"
+                                    data-on:click="@@post('/Contact/Create')">Save</button>
+                            <button class="btn btn-secondary"
+                                    data-on:click="$showForm = false">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*
+        data-init runs once when this element enters the DOM.
+        It fires a GET request to load the initial contact list.
+        The server responds with an SSE event containing HTML,
+        which Datastar patches into this div (matched by id).
+    *@
+    <div id="contact-list" data-init="@@get('/Contact/List')">
+        <p class="text-muted">Loading contacts...</p>
+    </div>
+</div>
