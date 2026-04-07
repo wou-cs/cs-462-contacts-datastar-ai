@@ -1,11 +1,15 @@
 using ContactList.Models;
+using Microsoft.EntityFrameworkCore;
 using StarFederation.Datastar.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddDatastar();
-builder.Services.AddSingleton<IContactRepository, StaticContactRepository>();
+
+builder.Services.AddDbContext<ContactDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("ContactDb")));
+builder.Services.AddScoped<IContactRepository, DbContactRepository>();
 
 var app = builder.Build();
 
