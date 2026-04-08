@@ -71,6 +71,27 @@ internal sealed class TestAppHost : IDisposable
         }
     }
 
+    /// <summary>
+    /// Resets the Contacts table to the original seed data between scenarios.
+    /// </summary>
+    public static void ResetData()
+    {
+        using var connection = new SqlConnection(TestConnectionString);
+        connection.Open();
+
+        using var command = connection.CreateCommand();
+        command.CommandText = """
+            DELETE FROM Contacts;
+            SET IDENTITY_INSERT Contacts ON;
+            INSERT INTO Contacts (Id, Name, Email, Phone, Category, Notes) VALUES
+                (1, 'Alice Smith', 'alice@example.com', '503-555-0101', 'Work', 'Project manager'),
+                (2, 'Bob Jones', 'bob@example.com', '503-555-0102', 'Friend', NULL),
+                (3, 'Carol White', 'carol@example.com', '503-555-0103', 'Family', 'Sister');
+            SET IDENTITY_INSERT Contacts OFF;
+            """;
+        command.ExecuteNonQuery();
+    }
+
     private static void ResetTestDatabase()
     {
         using var connection = new SqlConnection(MasterConnectionString);

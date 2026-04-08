@@ -20,6 +20,7 @@ public sealed class ViewContactsStepDefinitions
         Assert.False(string.IsNullOrWhiteSpace(TestAppHost.BaseUrl));
     }
 
+    [Given("I open the contacts page")]
     [When("I open the contacts page")]
     public void WhenIOpenTheContactsPage()
     {
@@ -37,6 +38,7 @@ public sealed class ViewContactsStepDefinitions
         });
     }
 
+    [Given("I should see the seeded contact {string}")]
     [Then("I should see the seeded contact {string}")]
     public void ThenIShouldSeeTheSeededContact(string contactName)
     {

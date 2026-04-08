@@ -62,6 +62,42 @@ public class StaticContactRepositoryTests
     }
 
     [Fact]
+    public void Update_ModifiesExistingContact()
+    {
+        var updated = new Contact
+        {
+            Id = 1,
+            Name = "Alice Johnson",
+            Email = "alice.j@example.com",
+            Phone = "503-555-9999",
+            Category = "Family",
+            Notes = "Updated"
+        };
+
+        _repo.Update(updated);
+
+        var contact = _repo.GetById(1);
+        Assert.NotNull(contact);
+        Assert.Equal("Alice Johnson", contact.Name);
+        Assert.Equal("alice.j@example.com", contact.Email);
+        Assert.Equal("503-555-9999", contact.Phone);
+        Assert.Equal("Family", contact.Category);
+        Assert.Equal("Updated", contact.Notes);
+    }
+
+    [Fact]
+    public void Update_IsNoOpForMissingId()
+    {
+        var countBefore = _repo.GetAll().Count();
+        var updated = new Contact { Id = 9999, Name = "Nobody", Category = "Other" };
+
+        _repo.Update(updated);
+
+        Assert.Equal(countBefore, _repo.GetAll().Count());
+        Assert.Null(_repo.GetById(9999));
+    }
+
+    [Fact]
     public void Remove_IsNoOpForMissingId()
     {
         var countBefore = _repo.GetAll().Count();
