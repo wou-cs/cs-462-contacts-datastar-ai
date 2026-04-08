@@ -122,3 +122,13 @@ The main architectural lesson is that the browser stays thin:
 - If changing search semantics, keep README claims aligned with `ContactController.Search()`.
 - If changing Datastar versions, keep the NuGet package and browser script version aligned.
 - If improving confidence, add controller/integration tests before broad UI refactors.
+
+## Local Workflow Notes
+
+- The local helper `gpush` is a thin wrapper around:
+  - `git add .`
+  - `git commit -m "<message>"`
+  - `git push`
+- Because of that behavior, `gpush` should be used when there are uncommitted changes to stage and commit.
+- `gpush` will fail on a clean working tree that already has a local commit waiting to be pushed, because the `git commit` step exits without creating a new commit.
+- If a commit has already been created manually, use plain `git push` instead of `gpush`.
