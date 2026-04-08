@@ -1,5 +1,9 @@
 @model IEnumerable<Contact>
 
+@{
+    var editingId = ViewData["EditingId"] as int?;
+}
+
 @if (!Model.Any())
 {
     <div id="contact-list">
@@ -28,12 +32,81 @@ else
                         <td>@(c.Phone ?? "")</td>
                         <td>@c.Category</td>
                         <td>
+                            <button class="btn btn-sm btn-outline-primary me-1"
+                                    data-on:click="@@get('/Contact/Edit/@c.Id')">
+                                Edit
+                            </button>
                             <button class="btn btn-sm btn-outline-danger"
                                     data-on:click="@@delete('/Contact/Delete/@c.Id')">
                                 Delete
                             </button>
                         </td>
                     </tr>
+                    @if (editingId == c.Id)
+                    {
+                        <tr>
+                            <td colspan="5">
+                                <div id="edit-form" class="card mb-2">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Editing @c.Name</h5>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Name</label>
+                                                    <input class="form-control" value="@c.Name" data-bind:editName
+                                                           data-on:keydown__debounce.500ms="@@post('/Contact/ValidateEdit')"
+                                                           data-class:is-invalid="$editNameError !== ''" />
+                                                    <div class="text-danger small" data-text="$editNameError"></div>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Email</label>
+                                                    <input class="form-control" type="email" value="@(c.Email ?? "")" data-bind:editEmail
+                                                           data-on:keydown__debounce.500ms="@@post('/Contact/ValidateEdit')"
+                                                           data-class:is-invalid="$editEmailError !== ''" />
+                                                    <div class="text-danger small" data-text="$editEmailError"></div>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Phone</label>
+                                                    <input class="form-control" type="tel" value="@(c.Phone ?? "")" data-bind:editPhone
+                                                           data-on:keydown__debounce.500ms="@@post('/Contact/ValidateEdit')"
+                                                           data-class:is-invalid="$editPhoneError !== ''" />
+                                                    <div class="text-danger small" data-text="$editPhoneError"></div>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Category</label>
+                                                    <select class="form-control" data-bind:editCategory
+                                                            data-on:change="@@post('/Contact/ValidateEdit')"
+                                                            data-class:is-invalid="$editCategoryError !== ''">
+                                                        <option value="">-- Select a category --</option>
+                                                        @foreach (var cat in new[] { "Friend", "Family", "Work", "Other" })
+                                                        {
+                                                            if (c.Category == cat)
+                                                            {
+                                                                <option value="@cat" selected>@cat</option>
+                                                            }
+                                                            else
+                                                            {
+                                                                <option value="@cat">@cat</option>
+                                                            }
+                                                        }
+                                                    </select>
+                                                    <div class="text-danger small" data-text="$editCategoryError"></div>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Notes</label>
+                                                    <textarea class="form-control" rows="3" data-bind:editNotes>@(c.Notes ?? "")</textarea>
+                                                </div>
+                                                <button class="btn btn-primary"
+                                                        data-on:click="@@post('/Contact/Update/@c.Id')">Save</button>
+                                                <button class="btn btn-secondary"
+                                                        data-on:click="@@get('/Contact/CancelEdit')">Cancel</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    }
                 }
             </tbody>
         </table>

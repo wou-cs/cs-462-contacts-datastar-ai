@@ -19,6 +19,20 @@ public class DbContactRepository : IContactRepository
         _db.SaveChanges();
     }
 
+    public void Update(Contact contact)
+    {
+        var existing = _db.Contacts.Find(contact.Id);
+        if (existing != null)
+        {
+            existing.Name = contact.Name;
+            existing.Email = contact.Email;
+            existing.Phone = contact.Phone;
+            existing.Category = contact.Category;
+            existing.Notes = contact.Notes;
+            _db.SaveChanges();
+        }
+    }
+
     public void Remove(int id)
     {
         var contact = _db.Contacts.Find(id);

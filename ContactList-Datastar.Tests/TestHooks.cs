@@ -29,6 +29,8 @@ public sealed class TestHooks
     [BeforeScenario]
     public void BeforeScenario()
     {
+        TestAppHost.ResetData();
+
         var options = new ChromeOptions();
         options.AddArgument("--headless=new");
         options.AddArgument("--no-sandbox");

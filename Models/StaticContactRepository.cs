@@ -24,6 +24,19 @@ public class StaticContactRepository : IContactRepository
         _contacts.Add(contact);
     }
 
+    public void Update(Contact contact)
+    {
+        var existing = GetById(contact.Id);
+        if (existing != null)
+        {
+            existing.Name = contact.Name;
+            existing.Email = contact.Email;
+            existing.Phone = contact.Phone;
+            existing.Category = contact.Category;
+            existing.Notes = contact.Notes;
+        }
+    }
+
     public void Remove(int id)
     {
         var contact = GetById(id);
