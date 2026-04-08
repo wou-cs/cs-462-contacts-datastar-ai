@@ -2,22 +2,31 @@ using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using Microsoft.Data.SqlClient;
 
 namespace ContactList.Tests;
 
 internal sealed class TestAppHost : IDisposable
 {
+    private const string TestDatabaseName = "ContactList_Test";
+
+    private static readonly string MasterConnectionString =
+        "Server=localhost,1433;Database=master;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=true";
+
+    private static readonly string TestConnectionString =
+        $"Server=localhost,1433;Database={TestDatabaseName};User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=true";
+
     private readonly Process _process;
     private readonly string _baseUrl;
-    private readonly string _databasePath;
     private readonly StringBuilder _output = new();
     private bool _disposed;
 
     private TestAppHost()
     {
+        ResetTestDatabase();
+
         var projectRoot = GetProjectRoot();
         var port = GetOpenPort();
-        _databasePath = Path.Combine(Path.GetTempPath(), $"contacts-bdd-{Guid.NewGuid():N}.db");
         _baseUrl = $"http://127.0.0.1:{port}";
 
         var startInfo = new ProcessStartInfo("dotnet")
@@ -34,10 +43,8 @@ internal sealed class TestAppHost : IDisposable
         startInfo.ArgumentList.Add(Path.Combine(projectRoot, "ContactList-Datastar.csproj"));
         startInfo.ArgumentList.Add("--urls");
         startInfo.ArgumentList.Add(_baseUrl);
-        startInfo.ArgumentList.Add("--DatabaseProvider");
-        startInfo.ArgumentList.Add("Sqlite");
         startInfo.ArgumentList.Add("--ConnectionStrings:ContactDb");
-        startInfo.ArgumentList.Add($"Data Source={_databasePath}");
+        startInfo.ArgumentList.Add(TestConnectionString);
 
         _process = new Process { StartInfo = startInfo, EnableRaisingEvents = true };
         _process.OutputDataReceived += (_, e) => AppendOutput(e.Data);
@@ -62,6 +69,26 @@ internal sealed class TestAppHost : IDisposable
         {
             Instance.Value.Dispose();
         }
+    }
+
+    private static void ResetTestDatabase()
+    {
+        using var connection = new SqlConnection(MasterConnectionString);
+        connection.Open();
+
+        // Drop the test database if it exists, then create a fresh one.
+        // Setting SINGLE_USER forces any lingering connections closed.
+        using var command = connection.CreateCommand();
+        command.CommandText = $"""
+            IF DB_ID('{TestDatabaseName}') IS NOT NULL
+            BEGIN
+                ALTER DATABASE [{TestDatabaseName}] SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+                DROP DATABASE [{TestDatabaseName}];
+            END
+            """;
+        command.ExecuteNonQuery();
+
+        // The app's startup will run EF Core Migrate(), which creates the DB and seeds data.
     }
 
     private static string GetProjectRoot() =>
@@ -143,10 +170,5 @@ internal sealed class TestAppHost : IDisposable
         }
 
         _process.Dispose();
-
-        if (File.Exists(_databasePath))
-        {
-            File.Delete(_databasePath);
-        }
     }
 }
