@@ -49,6 +49,20 @@ public sealed class ViewContactsStepDefinitions
         });
     }
 
+    [Then("the contact table should have the following columns:")]
+    public void ThenTheContactTableShouldHaveTheFollowingColumns(Table table)
+    {
+        var expectedColumns = table.Rows.Select(r => r["Column"]).ToList();
+        WaitUntil(driver =>
+        {
+            var headers = driver.FindElements(By.CssSelector("#contact-list thead th"))
+                .Select(th => th.Text.Trim())
+                .Where(t => !string.IsNullOrEmpty(t))
+                .ToList();
+            return expectedColumns.All(expected => headers.Contains(expected));
+        });
+    }
+
     private IWebDriver GetDriver() => _scenarioContext.Get<IWebDriver>(nameof(IWebDriver));
 
     private void WaitUntil(Func<IWebDriver, bool> condition)

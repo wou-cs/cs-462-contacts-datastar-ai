@@ -17,22 +17,22 @@ namespace ContactList.Tests.Features
     
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Reqnroll", "3.0.0.0")]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public partial class ViewContactsFeature : object, global::Xunit.IClassFixture<ViewContactsFeature.FixtureData>, global::Xunit.IAsyncLifetime
+    public partial class DeleteAContactFeature : object, global::Xunit.IClassFixture<DeleteAContactFeature.FixtureData>, global::Xunit.IAsyncLifetime
     {
         
         private global::Reqnroll.ITestRunner testRunner;
         
         private static string[] featureTags = ((string[])(null));
         
-        private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new global::System.Globalization.CultureInfo("en-US"), "Features", "View contacts", "  As a user\n  I want to open the contacts page\n  So that I can see the seeded con" +
-                "tacts list", global::Reqnroll.ProgrammingLanguage.CSharp, featureTags, InitializeCucumberMessages());
+        private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new global::System.Globalization.CultureInfo("en-US"), "Features", "Delete a contact", "  As a user\n  I want to remove contacts I no longer need\n  So that my list stays " +
+                "relevant", global::Reqnroll.ProgrammingLanguage.CSharp, featureTags, InitializeCucumberMessages());
         
         private global::Xunit.Abstractions.ITestOutputHelper _testOutputHelper;
         
-#line 1 "ViewContacts.feature"
+#line 1 "DeleteContact.feature"
 #line hidden
         
-        public ViewContactsFeature(ViewContactsFeature.FixtureData fixtureData, global::Xunit.Abstractions.ITestOutputHelper testOutputHelper)
+        public DeleteAContactFeature(DeleteAContactFeature.FixtureData fixtureData, global::Xunit.Abstractions.ITestOutputHelper testOutputHelper)
         {
             this._testOutputHelper = testOutputHelper;
         }
@@ -112,13 +112,16 @@ namespace ContactList.Tests.Features
     await testRunner.GivenAsync("the contacts application is running", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
 #line 8
-    await testRunner.WhenAsync("I open the contacts page", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+    await testRunner.AndAsync("I open the contacts page", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+#line 9
+    await testRunner.AndAsync("I should see the seeded contact \"Alice Smith\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
         }
         
         private static global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages InitializeCucumberMessages()
         {
-            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/ViewContacts.feature.ndjson", 5);
+            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/DeleteContact.feature.ndjson", 5);
         }
         
         async global::System.Threading.Tasks.Task global::Xunit.IAsyncLifetime.InitializeAsync()
@@ -146,18 +149,18 @@ namespace ContactList.Tests.Features
             await this.TestTearDownAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="Opening the contacts page shows seeded contacts")]
-        [global::Xunit.TraitAttribute("FeatureTitle", "View contacts")]
-        [global::Xunit.TraitAttribute("Description", "Opening the contacts page shows seeded contacts")]
-        public async global::System.Threading.Tasks.Task OpeningTheContactsPageShowsSeededContacts()
+        [global::Xunit.SkippableFactAttribute(DisplayName="Each contact row has a Delete button")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "Delete a contact")]
+        [global::Xunit.TraitAttribute("Description", "Each contact row has a Delete button")]
+        public async global::System.Threading.Tasks.Task EachContactRowHasADeleteButton()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "0";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Opening the contacts page shows seeded contacts", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Each contact row has a Delete button", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
-#line 10
+#line 11
   this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -170,25 +173,22 @@ namespace ContactList.Tests.Features
 #line 6
   await this.FeatureBackgroundAsync();
 #line hidden
-#line 11
-    await testRunner.ThenAsync("I should see the contacts heading", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
-#line hidden
 #line 12
-    await testRunner.AndAsync("I should see the seeded contact \"Alice Smith\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+    await testRunner.ThenAsync("each contact row should have an \"Delete\" button", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="All three seeded contacts appear on page load")]
-        [global::Xunit.TraitAttribute("FeatureTitle", "View contacts")]
-        [global::Xunit.TraitAttribute("Description", "All three seeded contacts appear on page load")]
-        public async global::System.Threading.Tasks.Task AllThreeSeededContactsAppearOnPageLoad()
+        [global::Xunit.SkippableFactAttribute(DisplayName="Deleting a contact removes it from the list")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "Delete a contact")]
+        [global::Xunit.TraitAttribute("Description", "Deleting a contact removes it from the list")]
+        public async global::System.Threading.Tasks.Task DeletingAContactRemovesItFromTheList()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "1";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("All three seeded contacts appear on page load", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Deleting a contact removes it from the list", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
 #line 14
@@ -205,30 +205,27 @@ namespace ContactList.Tests.Features
   await this.FeatureBackgroundAsync();
 #line hidden
 #line 15
-    await testRunner.ThenAsync("I should see the seeded contact \"Alice Smith\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+    await testRunner.WhenAsync("I click the \"Delete\" button for \"Bob Jones\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
 #line 16
-    await testRunner.AndAsync("I should see the seeded contact \"Bob Jones\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
-#line hidden
-#line 17
-    await testRunner.AndAsync("I should see the seeded contact \"Carol White\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+    await testRunner.ThenAsync("I should not see \"Bob Jones\" in the contact list", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="Contact table shows name, email, phone, and category columns")]
-        [global::Xunit.TraitAttribute("FeatureTitle", "View contacts")]
-        [global::Xunit.TraitAttribute("Description", "Contact table shows name, email, phone, and category columns")]
-        public async global::System.Threading.Tasks.Task ContactTableShowsNameEmailPhoneAndCategoryColumns()
+        [global::Xunit.SkippableFactAttribute(DisplayName="Deleting one contact leaves the others intact")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "Delete a contact")]
+        [global::Xunit.TraitAttribute("Description", "Deleting one contact leaves the others intact")]
+        public async global::System.Threading.Tasks.Task DeletingOneContactLeavesTheOthersIntact()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "2";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Contact table shows name, email, phone, and category columns", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Deleting one contact leaves the others intact", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
-#line 19
+#line 18
   this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -241,18 +238,17 @@ namespace ContactList.Tests.Features
 #line 6
   await this.FeatureBackgroundAsync();
 #line hidden
-                global::Reqnroll.Table table1 = new global::Reqnroll.Table(new string[] {
-                            "Column"});
-                table1.AddRow(new string[] {
-                            "Name"});
-                table1.AddRow(new string[] {
-                            "Email"});
-                table1.AddRow(new string[] {
-                            "Phone"});
-                table1.AddRow(new string[] {
-                            "Category"});
+#line 19
+    await testRunner.WhenAsync("I click the \"Delete\" button for \"Bob Jones\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
 #line 20
-    await testRunner.ThenAsync("the contact table should have the following columns:", ((string)(null)), table1, "Then ");
+    await testRunner.ThenAsync("I should see \"Alice Smith\" in the contact list", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line hidden
+#line 21
+    await testRunner.AndAsync("I should see \"Carol White\" in the contact list", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+#line 22
+    await testRunner.AndAsync("I should not see \"Bob Jones\" in the contact list", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
@@ -265,12 +261,12 @@ namespace ContactList.Tests.Features
             
             async global::System.Threading.Tasks.Task global::Xunit.IAsyncLifetime.InitializeAsync()
             {
-                await ViewContactsFeature.FeatureSetupAsync();
+                await DeleteAContactFeature.FeatureSetupAsync();
             }
             
             async global::System.Threading.Tasks.Task global::Xunit.IAsyncLifetime.DisposeAsync()
             {
-                await ViewContactsFeature.FeatureTearDownAsync();
+                await DeleteAContactFeature.FeatureTearDownAsync();
             }
         }
     }

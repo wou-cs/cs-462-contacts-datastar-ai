@@ -1,0 +1,12 @@
+{
+  "cucumber.features": [
+    "ContactList-Datastar.Tests/Features/**/*.feature"
+  ],
+  "cucumber.glue": [
+    "ContactList-Datastar.Tests/Features/**/*StepDefinitions.cs"
+  ],
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.patterns": {
+    "*.feature": "${capture}.feature.cs"
+  }
+}
